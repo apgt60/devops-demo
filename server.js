@@ -17,15 +17,18 @@ rollbar.log('Hello world!')
 const students = ['Jimmy', 'Timothy', 'Jimothy']
 
 app.get('/', (req, res) => {
+    rollbar.info("User accessed site root")
     res.sendFile(path.join(__dirname, '/index.html'))
 })
 
 app.get('/api/students', (req, res) => {
+    rollbar.warning("User is accessing student information")
     res.status(200).send(students)
 })
 
 app.post('/api/students', (req, res) => {
    let {name} = req.body
+   rollbar.critical(`There is an imposter among us! Their name is ${name}`, req)
 
    const index = students.findIndex(student => {
        return student === name
@@ -47,7 +50,7 @@ app.post('/api/students', (req, res) => {
 
 app.delete('/api/students/:index', (req, res) => {
     const targetIndex = +req.params.index
-    
+    rollbar.error("Delete method error", req)
     students.splice(targetIndex, 1)
     res.status(200).send(students)
 })
